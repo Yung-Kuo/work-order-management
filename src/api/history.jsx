@@ -1,0 +1,95 @@
+export const fetchHistoryByTaskId = async (taskId, setHistory) => {
+  try {
+    const response = await fetch(`/tasks/${taskId}/history`, {
+      method: "GET",
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await response.json();
+    setHistory((prev) => ({
+      ...prev,
+      ...Object.fromEntries((data.histories || []).map((h) => [h.item_id, h])),
+    }));
+  } catch (error) {
+    console.error("Error fetching history by task id:", error);
+  }
+};
+
+export const upsertHistory = async (historyData) => {
+  try {
+    // 1. Fetch all histories for the task
+    const res = await fetch(`/tasks/${historyData.task_id}/history`, {
+      method: "GET",
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch histories for upsert");
+    }
+
+    const data = await res.json();
+    const histories = data.histories || [];
+
+    // 2. Try to find an existing history for this item_id
+    const existing = histories.find((h) => h.item_id === historyData.item_id);
+    console.log("existing data: ", existing);
+
+    // 3. Set URL and method based on existence
+    let url = "/tasks/history";
+    let method = "POST";
+    if (existing) {
+      url = `/tasks/history/${existing.history_id}`;
+      method = "PUT";
+    }
+
+    // 4. Use one fetch call for both create and update
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(
+        existing ? { ...existing, ...historyData } : historyData,
+      ),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to ${method === "POST" ? "create" : "update"} history`,
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error upserting history:", error);
+    throw error;
+  }
+
+  //   try {
+  //     const response = await fetch(`/tasks/history`, {
+  //       method: "POST",
+  //       headers: {
+  //         "ngrok-skip-browser-warning": "true",
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(historyData),
+  //     });
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+  //     const data = await response.json();
+  //     return data;
+  //   } catch (error) {
+  //     console.error("Error upserting history:", error);
+  //     throw error;
+  //   }
+};

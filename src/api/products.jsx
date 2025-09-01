@@ -11,7 +11,7 @@ export const fetchProductItems = async (product_name, setProductItems) => {
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
-    console.log("data: ", data);
+    // console.log("data: ", data);
     setProductItems((prev) => ({
       ...prev,
       [product_name]: data,

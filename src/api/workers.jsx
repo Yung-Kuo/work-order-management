@@ -11,7 +11,6 @@ export const fetchWorkers = async (setWorkers) => {
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
-    console.log("data: ", data);
     setWorkers(data);
   } catch (error) {
     console.error("Error fetching data:", error);

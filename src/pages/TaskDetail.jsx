@@ -2,31 +2,60 @@ import { useParams, useNavigate } from "react-router";
 import { useState, useEffect, useContext } from "react";
 import { fetchProductItems } from "../api/products";
 import { fetchWorkers } from "../api/workers";
+import { fetchHistoryByTaskId } from "../api/history";
 import TaskContext from "../context/TaskContext";
 import { ProductItemCard } from "../components/UI/ProductItemCard";
 
 export const TaskDetail = () => {
   const { tid } = useParams();
-  const [tasks] = useContext(TaskContext);
+  const [tasks, setTasks] = useContext(TaskContext);
   const navigate = useNavigate();
   const task = tasks.find((t) => String(t.id) === String(tid));
 
+  // navigate to dashboard if no task data(because tasks can only be accessed using date instead of tid)
   useEffect(() => {
     if (!task) {
       navigate("/", { replace: true });
     }
   }, [task, navigate]);
 
+  // fetch product items
   const [productItems, setProductItems] = useState({});
   useEffect(() => {
     fetchProductItems(task.product, setProductItems);
   }, [task]);
 
+  // fetch workers
   const [workers, setWorkers] = useState([]);
   useEffect(() => {
     fetchWorkers(setWorkers);
   }, []);
+  // fetch history
+  const [history, setHistory] = useState([]);
+  useEffect(() => {
+    // fetchHistoryByDate(task.date, setHistory);
+    fetchHistoryByTaskId(task.id, setHistory);
+  }, [task]);
+
   const [selectedWorkers, setSelectedWorkers] = useState({});
+  useEffect(() => {
+    setSelectedWorkers(() => {
+      const selected = {};
+      Object.values(history).forEach((h) => {
+        // use worker_ids to get worker data
+        // filter(Boolean) is used to remove any undefined values in case a worker id does not match any worker in the workers array
+        if (!selected[h.item_id]) selected[h.item_id] = [];
+        selected[h.item_id].push(
+          ...(h.worker_ids || []).map((wid) =>
+            workers.find((w) => w.id === wid),
+          ),
+        );
+      });
+      console.log("history: ", history);
+      console.log("selected: ", selected);
+      return selected;
+    });
+  }, [history, workers]);
 
   return (
     <div className="flex h-full w-full flex-col gap-4 py-10 text-2xl text-neutral-100">
@@ -53,10 +82,13 @@ export const TaskDetail = () => {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {(productItems?.[task?.product] ?? []).map((item) => (
           <ProductItemCard
+            task={task}
             item={item}
             workers={workers}
-            selectedWorkers={selectedWorkers}
+            selectedWorkers={selectedWorkers[item.id]}
             setSelectedWorkers={setSelectedWorkers}
+            history={history[item.id]}
+            setHistory={setHistory}
           />
         ))}
       </div>

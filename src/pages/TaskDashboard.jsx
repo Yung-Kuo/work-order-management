@@ -5,7 +5,7 @@ import { TaskTab } from "../components/UI/TaskTab";
 import { fetchTasksByDate } from "../api/tasks";
 
 export const TaskDashboard = () => {
-  const [date, setDate] = useState("2025-08-27");
+  const [date, setDate] = useState("2025-08-26");
   // const [tasks, setTasks] = useState([]);
   const fillerTasks = [
     ["A001", "09:00:00", "黃金泡菜", "10 kg", "completed"],
