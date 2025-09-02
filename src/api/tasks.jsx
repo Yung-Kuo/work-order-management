@@ -1,12 +1,10 @@
 export const fetchTasksByDate = async (setTasks, date) => {
   try {
     let url = `/tasks/${date}`;
-    if (import.meta.env.NODE_ENV === "production") {
+    if (import.meta.env.VITE_NODE_ENV === "production") {
       console.log("in production!!!");
       url = `${import.meta.env.VITE_API_URL}${url}`;
     }
-    console.log("NODE_ENV: ", import.meta.env.VITE_NODE_ENV);
-    console.log("VITE_API_URL: ", import.meta.env.VITE_API_URL);
     console.log("url: ", url);
     const response = await fetch(url, {
       method: "GET",
@@ -30,7 +28,7 @@ export const createNewTask = async (newTask) => {
   console.log("newTask: ", newTask);
   try {
     let url = `/tasks`;
-    if (import.meta.env.NODE_ENV === "production") {
+    if (import.meta.env.VITE_NODE_ENV === "production") {
       console.log("in production!!!");
       url = `${import.meta.env.VITE_API_URL}/tasks`;
     }
@@ -58,7 +56,7 @@ export const createNewTask = async (newTask) => {
 export const updateTaskStatus = async (task, status) => {
   try {
     let url = `/tasks/${task.id}/status`;
-    if (import.meta.env.NODE_ENV === "production") {
+    if (import.meta.env.VITE_NODE_ENV === "production") {
       console.log("in production!!!");
       url = `${import.meta.env.VITE_API_URL}${url}`;
     }

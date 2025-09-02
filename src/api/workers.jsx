@@ -1,7 +1,7 @@
 export const fetchWorkers = async (setWorkers) => {
   try {
-    let url = `/tasks/workers`
-    if (import.meta.env.NODE_ENV === "production") {
+    let url = `/tasks/workers`;
+    if (import.meta.env.VITE_NODE_ENV === "production") {
       console.log("in production!!!");
       url = `${import.meta.env.VITE_API_URL}${url}`;
     }

@@ -1,7 +1,7 @@
 export const fetchHistoryByTaskId = async (taskId, setHistory) => {
   try {
     let url = `/tasks/${taskId}/history`;
-    if (import.meta.env.NODE_ENV === "production") {
+    if (import.meta.env.VITE_NODE_ENV === "production") {
       console.log("in production!!!");
       url = `${import.meta.env.VITE_API_URL}${url}`;
     }
@@ -29,7 +29,7 @@ export const fetchHistoryByTaskId = async (taskId, setHistory) => {
 export const upsertHistory = async (historyData) => {
   try {
     let checkUrl = `/tasks/${historyData.task_id}/history`;
-    if (import.meta.env.NODE_ENV === "production") {
+    if (import.meta.env.VITE_NODE_ENV === "production") {
       console.log("in production!!!");
       checkUrl = `${import.meta.env.VITE_API_URL}${checkUrl}`;
     }
@@ -63,7 +63,7 @@ export const upsertHistory = async (historyData) => {
     }
     console.log("url: ", url);
     console.log("method: ", method);
-    if (import.meta.env.NODE_ENV === "production") {
+    if (import.meta.env.VITE_NODE_ENV === "production") {
       console.log("in production!!!");
       url = `${import.meta.env.VITE_API_URL}${url}`;
     }

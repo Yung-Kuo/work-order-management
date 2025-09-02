@@ -1,7 +1,7 @@
 export const fetchProductItems = async (product_name, setProductItems) => {
   try {
     let url = `/products/${product_name}/items`;
-    if (import.meta.env.NODE_ENV === "production") {
+    if (import.meta.env.VITE_NODE_ENV === "production") {
       console.log("in production!!!");
       url = `${import.meta.env.VITE_API_URL}${url}`;
     }
