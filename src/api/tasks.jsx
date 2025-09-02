@@ -5,6 +5,7 @@ export const fetchTasksByDate = async (setTasks, date) => {
       console.log("in production!!!");
       url = `${import.meta.env.VITE_API_URL}${url}`;
     }
+    console.log("NODE_ENV", import.meta.env.NODE_ENV);
     console.log("url: ", url);
     const response = await fetch(url, {
       method: "GET",
