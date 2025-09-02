@@ -21,10 +21,9 @@ export const TaskDashboard = () => {
   useEffect(() => {
     fetchTasksByDate(setTasks, date);
   }, [date]);
-  const [selectedTask, setSelectedTask] = useState([]);
 
   return (
-    <div className="flex h-screen w-full flex-col items-center gap-4 py-10 text-2xl text-neutral-100">
+    <div className="flex h-screen w-full flex-col items-center gap-4 py-10 text-xl text-neutral-100 md:text-2xl">
       <input
         type="date"
         id="workDate"
@@ -63,9 +62,9 @@ export const TaskDashboard = () => {
                   key={task.id}
                   to={`/task/${task.id}`}
                   className="w-full"
-                  onClick={() => setSelectedTask(task)}
                 >
                   <TaskTab
+                    task={task}
                     first={task.id ?? index}
                     second={""}
                     third={task.product}
@@ -73,16 +72,6 @@ export const TaskDashboard = () => {
                     fifth={task.status}
                   />
                 </NavLink>
-              ))}
-
-              {fillerTasks.map((ft, index) => (
-                <TaskTab
-                  first={ft[0] ?? index}
-                  second={ft[1]}
-                  third={ft[2]}
-                  fourth={ft[3]}
-                  fifth={ft[4]}
-                />
               ))}
             </>
           ) : (

@@ -1,6 +1,20 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useContext } from "react";
+import TaskContext from "../../context/TaskContext";
 import { upsertHistory } from "../../api/history";
 import { ComboboxCreate } from "../HeadlessUI/ComboboxCreate";
+
+// Helper to format duration in HH:mm:ss
+function formatDuration(ms) {
+  if (!ms || ms < 0) return "00:00:00";
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(
+    2,
+    "0",
+  );
+  const seconds = String(totalSeconds % 60).padStart(2, "0");
+  return `${hours}:${minutes}:${seconds}`;
+}
 
 export const ProductItemCard = ({
   task,
@@ -11,57 +25,106 @@ export const ProductItemCard = ({
   history,
   setHistory,
 }) => {
+  const [setTasks] = useContext(TaskContext);
   const [tempWorker, setTempWorker] = useState([]);
+  const [timer, setTimer] = useState(0);
+
+  // Timer effect: updates every second if counting
   useEffect(() => {
-    console.log(`selectedWorkers[${item.id}]: `, selectedWorkers);
-  }, [selectedWorkers]);
+    let intervalId = null;
 
-  const handleAddWorker = () => {
-    setSelectedWorkers((prev) => {
-      const currentList = prev[item.id] ?? [];
-      if (
-        tempWorker &&
-        tempWorker.id != null &&
-        !currentList.some((w) => w.id === tempWorker.id)
-      ) {
-        // Create the new list and new state
-        const newList = [...currentList, tempWorker];
-        const newState = { ...prev, [item.id]: newList };
+    if (history?.start_time) {
+      const start = new Date(history.start_time).getTime();
+      const end = history?.end_time
+        ? new Date(history.end_time).getTime()
+        : null;
 
-        // Create the history template with the new, correct data
-        const newHistoryTemplate = {
-          task_id: task.id,
-          product_id: 0,
-          item_id: item.id,
-          worker_ids: newList.map((w) => w.id), // Use the new list here
-          weight: 0,
-          start_time: "", // Populate the start time
-          end_time: "",
-        };
-
-        console.log(
-          "Adding worker - Calling upsertHistory with:",
-          newHistoryTemplate,
-        );
-        upsertHistory(newHistoryTemplate);
-
-        // Return the new state to update the component
-        return newState;
+      if (!end) {
+        // Counting: update every second
+        setTimer(Date.now() - start);
+        intervalId = setInterval(() => {
+          setTimer(Date.now() - start);
+        }, 1000);
+      } else {
+        // Finished: show the difference
+        setTimer(end - start);
       }
-      return prev;
-    });
+    } else {
+      setTimer(0);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [history?.start_time, history?.end_time]);
+
+  const handleAddWorker = async () => {
+    const currentList = selectedWorkers ?? [];
+    const newList = [...currentList, tempWorker];
+
+    // Create the history template with the new, correct data
+    const newHistoryTemplate = {
+      task_id: task.id,
+      product_id: 0,
+      item_id: item.id,
+      worker_ids: newList.map((w) => w.id),
+      weight: 0,
+      start_time: history?.start_time || "",
+      end_time: history?.end_time || "",
+    };
+
+    try {
+      const response = await upsertHistory(newHistoryTemplate);
+      if (response) {
+        setHistory((prevHistory) => ({
+          ...prevHistory,
+          [item.id]: {
+            ...prevHistory[item.id],
+            worker_ids: response.workers,
+          },
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to upsert history after adding worker:", err);
+    }
     setTempWorker([]);
   };
+
+  const handleDeleteWorker = async (workerId) => {
+    const newList = (selectedWorkers ?? []).filter((w) => w.id !== workerId);
+
+    // Prepare the new history template with updated worker_ids
+    const newHistoryTemplate = {
+      task_id: task.id,
+      product_id: 0,
+      item_id: item.id,
+      worker_ids: newList.map((w) => w.id),
+      weight: 0,
+      start_time: history?.start_time || "",
+      end_time: history?.end_time || "",
+    };
+
+    try {
+      const response = await upsertHistory(newHistoryTemplate);
+      if (response) {
+        setHistory((prevHistory) => ({
+          ...prevHistory,
+          [item.id]: {
+            ...prevHistory[item.id],
+            worker_ids: response.workers,
+          },
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to upsert history after deleting worker:", err);
+    }
+  };
+
   const handleAddStartTime = async () => {
     // upsert start_time for this item
     const now = new Date().toISOString();
     try {
-      // upsertHistory expects: { task_id, item_id, start_time, worker_ids }
-      // worker_ids: selectedWorkers is an array of worker objects
       const workerIds = (selectedWorkers ?? []).map((w) => w.id);
-      // import u
-      // If upsert is successful, update history for this item
-      // We assume upsertHistory returns the updated history object
       const newHistoryTemplate = {
         task_id: task.id,
         product_id: 0,
@@ -71,21 +134,42 @@ export const ProductItemCard = ({
         start_time: now,
         end_time: history?.end_time || "",
       };
-      console.log("newHistoryTemplate: ", newHistoryTemplate);
       const updatedHistory = await upsertHistory(newHistoryTemplate);
-      // Update the history state for this item
       if (updatedHistory) {
-        // history is an object mapping item.id to history object
-        // setHistory is assumed to be available in props
         setHistory((prev) => ({
           ...prev,
-          [item.id]: updatedHistory,
+          [item.id]: { ...prev[item.id], ...newHistoryTemplate },
         }));
       }
-
-      // Optionally: show feedback or refresh history
     } catch (err) {
       console.error("Failed to upsert start_time:", err);
+    }
+  };
+
+  const handleAddEndTime = async () => {
+    // upsert end_time for this item
+    const now = new Date().toISOString();
+    try {
+      const workerIds = (selectedWorkers ?? []).map((w) => w.id);
+      const newHistoryTemplate = {
+        task_id: task.id,
+        product_id: 0,
+        item_id: item.id,
+        worker_ids: workerIds,
+        weight: 0,
+        start_time: history?.start_time || "",
+        end_time: now,
+      };
+      const updatedHistory = await upsertHistory(newHistoryTemplate);
+      console.log("newHistoryTemplate: ", newHistoryTemplate);
+      if (updatedHistory) {
+        setHistory((prev) => ({
+          ...prev,
+          [item.id]: { ...prev[item.id], ...newHistoryTemplate },
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to upsert end_time:", err);
     }
   };
 
@@ -105,10 +189,7 @@ export const ProductItemCard = ({
               name="員工"
               options={workers}
               value={tempWorker}
-              onChange={(value) =>
-                // setSelectedWorkers((prev) => [...prev, value.id])
-                setTempWorker(value)
-              }
+              onChange={(value) => setTempWorker(value)}
               className="rounded-md border-2 border-transparent bg-neutral-900 p-2 text-2xl text-neutral-100 focus:border-sky-600 focus:outline-none"
             />
           </div>
@@ -127,38 +208,33 @@ export const ProductItemCard = ({
               className="flex items-center gap-4 rounded-full bg-neutral-600 px-5 py-2"
             >
               {worker?.name}
-              <button
-                onClick={() =>
-                  setSelectedWorkers((prev) => {
-                    const currentList = prev[item.id] ?? [];
-                    return {
-                      ...prev,
-                      [item.id]: currentList.filter((w) => w.id !== worker.id),
-                    };
-                  })
-                }
-                className="h-5 w-5 cursor-pointer rounded-full bg-neutral-400"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  className="h-full w-full text-neutral-600"
+              {!history?.end_time && (
+                <button
+                  onClick={() => handleDeleteWorker(worker?.id)}
+                  className="h-5 w-5 cursor-pointer rounded-full bg-neutral-400"
                 >
-                  <line x1="5" y1="5" x2="15" y2="15" />
-                  <line x1="15" y1="5" x2="5" y2="15" />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    className="h-full w-full text-neutral-600"
+                  >
+                    <line x1="5" y1="5" x2="15" y2="15" />
+                    <line x1="15" y1="5" x2="5" y2="15" />
+                  </svg>
+                </button>
+              )}
             </div>
           ))}
         </div>
         {/* start timer */}
         <div className="mt-10 flex text-xl">
           <button
-            className="w-max cursor-pointer rounded-l-md bg-neutral-600 px-4 py-2 transition-all active:scale-95"
+            className="w-max cursor-pointer rounded-l-md bg-neutral-600 px-4 py-2 whitespace-nowrap transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
             onClick={handleAddStartTime}
+            disabled={history?.start_time}
           >
             開始計時
           </button>
@@ -180,7 +256,11 @@ export const ProductItemCard = ({
         </div>
         {/* stop timer */}
         <div className="flex text-xl">
-          <button className="w-max cursor-pointer rounded-l-md bg-neutral-600 px-4 py-2 transition-all active:scale-95">
+          <button
+            className="w-max cursor-pointer rounded-l-md bg-neutral-600 px-4 py-2 whitespace-nowrap transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={handleAddEndTime}
+            disabled={history?.end_time}
+          >
             結束計時
           </button>
           <div className="grow rounded-r-md bg-neutral-900 px-4 py-2">
@@ -196,6 +276,21 @@ export const ProductItemCard = ({
               })
             ) : (
               <span className="text-neutral-600">尚未結束</span>
+            )}
+          </div>
+        </div>
+        {/* display timer */}
+        <div className="flex w-max self-end py-2 text-4xl">
+          <h3
+            className={`flex items-center ${!history?.start_time ? "text-neutral-600" : ""}`}
+          >
+            計時：
+          </h3>
+          <div className="flex grow items-center justify-center border-b-2 border-neutral-600 pl-2">
+            {history?.start_time ? (
+              <span>{formatDuration(timer)}</span>
+            ) : (
+              <span className="text-neutral-600">--:--:--</span>
             )}
           </div>
         </div>

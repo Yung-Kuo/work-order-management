@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
+import { updateTaskStatus } from "../api/tasks";
 import { fetchProductItems } from "../api/products";
 import { fetchWorkers } from "../api/workers";
 import { fetchHistoryByTaskId } from "../api/history";
@@ -10,7 +11,12 @@ export const TaskDetail = () => {
   const { tid } = useParams();
   const [tasks, setTasks] = useContext(TaskContext);
   const navigate = useNavigate();
-  const task = tasks.find((t) => String(t.id) === String(tid));
+
+  // Use useMemo to avoid unnecessary recalculation of task on every render
+  const task = useMemo(
+    () => tasks.find((t) => String(t.id) === String(tid)),
+    [tasks, tid],
+  );
 
   // navigate to dashboard if no task data(because tasks can only be accessed using date instead of tid)
   useEffect(() => {
@@ -37,6 +43,50 @@ export const TaskDetail = () => {
     fetchHistoryByTaskId(task.id, setHistory);
   }, [task]);
 
+  // calculate total time (sum of all duration_minutes)
+  const totalTime = useMemo(() => {
+    if (!history || Object.keys(history).length === 0) return "00:00:00";
+    const totalMinutes = Object.values(history).reduce(
+      (sum, h) => sum + (h.duration_minutes || 0),
+      0,
+    );
+    const hours = Math.floor(totalMinutes / 60)
+      .toString()
+      .padStart(2, "0");
+    const minutes = Math.floor(totalMinutes % 60)
+      .toString()
+      .padStart(2, "0");
+    const seconds = "00";
+    return `${hours}:${minutes}:${seconds}`;
+  }, [history]);
+
+  // to update task status
+  useEffect(() => {
+    if (!task || !history || Object.keys(history).length === 0) return;
+
+    const historyArr = Object.values(history);
+    const allHaveStart = historyArr.every((h) => !!h.start_time);
+    const allHaveEnd = historyArr.every((h) => !!h.end_time);
+    const someHaveStart = historyArr.some((h) => !!h.start_time);
+
+    if (allHaveStart && allHaveEnd) {
+      // All items completed
+      if (task.status !== "completed") {
+        updateTaskStatus(task, "completed");
+      }
+    } else if (someHaveStart) {
+      // Some started, not all completed
+      if (task.status !== "in_progress") {
+        updateTaskStatus(task, "in_progress");
+      }
+    } else {
+      // None started
+      if (task.status !== "pending") {
+        updateTaskStatus(task, "pending");
+      }
+    }
+  }, [history, task]);
+
   const [selectedWorkers, setSelectedWorkers] = useState({});
   useEffect(() => {
     setSelectedWorkers(() => {
@@ -59,23 +109,36 @@ export const TaskDetail = () => {
 
   return (
     <div className="flex h-full w-full flex-col gap-4 py-10 text-2xl text-neutral-100">
-      <div className="grid w-full grid-cols-2 gap-4 rounded-md bg-neutral-700 p-10 text-neutral-300">
+      <div className="grid w-full grid-cols-2 gap-4 rounded-md bg-neutral-700 p-5 text-neutral-300">
         <h4>
-          工單：<span className="font-bold text-neutral-100">{task?.id}</span>
+          工單：
+          <span className="block font-bold text-neutral-100 md:inline-block">
+            {task?.id}
+          </span>
         </h4>
         <h4>
-          日期：<span className="font-bold text-neutral-100">{task?.date}</span>
+          日期：
+          <span className="block font-bold text-neutral-100 md:inline-block">
+            {task?.date}
+          </span>
         </h4>
         <h4>
           產品名稱：
-          <span className="font-bold text-neutral-100">{task?.product}</span>
+          <span className="block font-bold text-neutral-100 md:inline-block">
+            {task?.product}
+          </span>
         </h4>
         <h4>
           重量：
-          <span className="font-bold text-neutral-100">{task?.weight} kg</span>
+          <span className="block font-bold text-neutral-100 md:inline-block">
+            {task?.weight} kg
+          </span>
         </h4>
         <h4>
-          時間：<span className="font-bold text-neutral-100"></span>
+          時間：
+          <span className="font-bold text-neutral-100 md:inline-block">
+            {totalTime}
+          </span>
         </h4>
         <h4></h4>
       </div>
