@@ -15,17 +15,27 @@ export const TaskDetail = () => {
   // Use useMemo to avoid unnecessary recalculation of task on every render
   // Handle case when tasks is not loaded or empty
   const task = useMemo(() => {
+    console.log("tasks: ", tasks);
     if (!tasks || !Array.isArray(tasks) || tasks.length === 0) return null;
     return tasks.find((t) => String(t.id) === String(tid)) || null;
   }, [tasks, tid]);
 
-  // navigate to dashboard if no task data(because tasks can only be accessed using date instead of tid)
-  // useEffect(() => {
-  //   // if (!task) {
-  //   //   navigate("/", { replace: true });
-  //   // }
-  //   fetchTaskById(tid, setTasks);
-  // }, [tid, setTasks]);
+  // fetch task by id and navigate home if still no task after fetch
+  useEffect(() => {
+    let isMounted = true;
+    fetchTaskById(tid, (data) => {
+      if (isMounted) {
+        setTasks(data);
+        // If no data returned, navigate home
+        if (!data || !Array.isArray(data) || data.length === 0 || !data[0]) {
+          navigate("/", { replace: true });
+        }
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [tid, setTasks, navigate]);
 
   // fetch product items
   const [productItems, setProductItems] = useState({});

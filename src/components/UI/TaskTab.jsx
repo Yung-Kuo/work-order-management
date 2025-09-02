@@ -36,7 +36,7 @@ export const TaskTab = ({ task }) => {
         {task?.totalTime || totalTime}
       </h4>
       <h4 className="p-2 first:rounded-l-md last:rounded-r-md odd:bg-neutral-700 lg:p-4">
-        {task.product}
+        {task?.product}
       </h4>
       <h4 className="p-2 first:rounded-l-md last:rounded-r-md odd:bg-neutral-700 lg:p-4">
         {task.weight + " kg"}

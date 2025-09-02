@@ -79,11 +79,11 @@ export const TaskDashboard = () => {
   const [openNewTask, setOpenNewTask] = useState(false);
 
   return (
-    <div className="flex h-screen w-full flex-col items-center gap-4 py-10 text-xl text-neutral-100 md:text-2xl">
+    <div className="flex h-screen w-full flex-col items-center gap-4 px-4 py-6 text-xl text-neutral-100 md:py-10 md:text-2xl">
       {openNewTask && <NewTaskPopup toggle={setOpenNewTask} />}
       {/* date & add new task */}
-      <div className="flex h-12 w-full items-center p-1">
-        <div className="absolute left-1/2 -translate-x-1/2">
+      <div className="flex h-12 w-full items-center p-1 md:h-16">
+        <div className="relative left-1/2 h-full -translate-x-1/2">
           <input
             type="date"
             id="workDate"
@@ -91,32 +91,48 @@ export const TaskDashboard = () => {
             value={date}
             min="2025-08-25"
             max="2025-09-05"
-            className="custom-date-input h-12 rounded-md border border-neutral-400 px-1 text-3xl ring-sky-300 transition-all outline-none focus:border-sky-300 focus:ring"
+            className="custom-date-input h-full rounded-md border border-neutral-400 px-1 text-3xl ring-sky-300 transition-all outline-none focus:border-sky-300 focus:ring"
             onChange={(e) => setDate(e.target.value)}
           />
         </div>
         <button
-          className="ml-auto flex h-12 cursor-pointer items-center rounded-md bg-neutral-300 px-4 font-bold text-neutral-800 transition-all hover:bg-neutral-100 active:scale-95"
+          className="ml-auto flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-neutral-300 font-bold text-neutral-800 transition-all hover:bg-neutral-100 active:scale-95 md:h-full md:w-max md:rounded-md md:px-4"
           onClick={() => setOpenNewTask((prev) => !prev)}
         >
-          新增工單
+          <span className="hidden md:flex">新增工單</span>
+          <span className="flex overflow-hidden text-3xl md:hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-full w-full"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </span>
         </button>
       </div>
 
       {/* table header */}
-      <div className="w-full p-1">
+      <div className="w-full px-1">
         <div className="grid w-full grid-cols-5 rounded-md bg-neutral-700">
-          <h3 className="p-4">工單編號</h3>
-          <h3 className="border-l border-dotted border-neutral-400 p-4">
+          <h3 className="p-2 text-center lg:p-4">工單編號</h3>
+          <h3 className="border-l border-dotted border-neutral-400 p-2 text-center lg:p-4">
             生產時間
           </h3>
-          <h3 className="border-l border-dotted border-neutral-400 p-4">
+          <h3 className="border-l border-dotted border-neutral-400 p-2 text-center lg:p-4">
             產品名稱
           </h3>
-          <h3 className="border-l border-dotted border-neutral-400 p-4">
+          <h3 className="border-l border-dotted border-neutral-400 p-2 text-center lg:p-4">
             生產重量
           </h3>
-          <h3 className="border-l border-dotted border-neutral-400 p-4">
+          <h3 className="border-l border-dotted border-neutral-400 p-2 text-center lg:p-4">
             狀態
           </h3>
         </div>
@@ -124,7 +140,7 @@ export const TaskDashboard = () => {
 
       {/* task list */}
       <div className="relative w-full grow overflow-y-auto">
-        <div className="flex w-full flex-col gap-4 p-1">
+        <div className="flex w-full flex-col gap-4 px-1">
           {loading ? (
             <p className="text-neutral-400">loading</p>
           ) : tasks && tasks.length > 0 ? (

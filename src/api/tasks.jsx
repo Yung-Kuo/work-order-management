@@ -44,7 +44,13 @@ export const fetchTaskById = async (taskId, setTasks) => {
     }
     const data = await response.json();
     console.log("data: ", data);
+    // Change product_name to product in the returned data
+    if (data && data.product_name) {
+      data.product = data.product_name;
+      delete data.product_name;
+    }
     setTasks([data]);
+    // return data;
   } catch (error) {
     console.error("Error fetching data:", error);
   }

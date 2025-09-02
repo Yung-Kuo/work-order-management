@@ -14,7 +14,7 @@ function App() {
   });
   return (
     <div className="flex min-h-screen w-screen flex-col items-center bg-neutral-900">
-      <div className="h-full w-4/5">
+      <div className="h-full w-full md:w-4/5">
         <TaskContext value={[tasks, setTasks, date, setDate]}>
           <Outlet />
         </TaskContext>
