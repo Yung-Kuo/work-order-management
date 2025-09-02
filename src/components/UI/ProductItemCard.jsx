@@ -162,11 +162,15 @@ export const ProductItemCard = ({
         end_time: now,
       };
       const updatedHistory = await upsertHistory(newHistoryTemplate);
-      console.log("newHistoryTemplate: ", newHistoryTemplate);
+      console.log("updatedHistory: ", updatedHistory);
       if (updatedHistory) {
         setHistory((prev) => ({
           ...prev,
-          [item.id]: { ...prev[item.id], ...newHistoryTemplate },
+          [item.id]: {
+            ...prev[item.id],
+            ...newHistoryTemplate,
+            duration_minutes: updatedHistory.duration_minutes,
+          },
         }));
       }
     } catch (err) {

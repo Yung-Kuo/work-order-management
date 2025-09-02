@@ -56,7 +56,9 @@ export const TaskDetail = () => {
     const minutes = Math.floor(totalMinutes % 60)
       .toString()
       .padStart(2, "0");
-    const seconds = "00";
+    const seconds = Math.floor((totalMinutes * 60) % 60)
+      .toString()
+      .padStart(2, "0");
     return `${hours}:${minutes}:${seconds}`;
   }, [history]);
 
