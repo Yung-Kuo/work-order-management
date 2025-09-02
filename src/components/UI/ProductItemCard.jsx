@@ -195,7 +195,8 @@ export const ProductItemCard = ({
           </div>
           <button
             onClick={() => handleAddWorker()}
-            className="h-10 grow cursor-pointer rounded-md bg-neutral-600 px-4 text-center text-xl transition-all hover:scale-105 active:scale-95"
+            className="h-10 grow cursor-pointer rounded-md bg-neutral-600 px-4 text-center text-xl transition-all hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+            disabled={history.end_time}
           >
             新增
           </button>

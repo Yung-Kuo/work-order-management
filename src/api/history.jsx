@@ -1,6 +1,12 @@
 export const fetchHistoryByTaskId = async (taskId, setHistory) => {
   try {
-    const response = await fetch(`/tasks/${taskId}/history`, {
+    let url = `/tasks/${taskId}/history`;
+    if (import.meta.env.NODE_ENV === "production") {
+      console.log("in production!!!");
+      url = `${import.meta.env.VITE_API_URL}${url}`;
+    }
+    console.log("url: ", url);
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "ngrok-skip-browser-warning": "true",
@@ -22,8 +28,14 @@ export const fetchHistoryByTaskId = async (taskId, setHistory) => {
 
 export const upsertHistory = async (historyData) => {
   try {
+    let checkUrl = `/tasks/${historyData.task_id}/history`;
+    if (import.meta.env.NODE_ENV === "production") {
+      console.log("in production!!!");
+      checkUrl = `${import.meta.env.VITE_API_URL}${checkUrl}`;
+    }
+    console.log("checkUrl: ", checkUrl);
     // 1. Fetch all histories for the task
-    const res = await fetch(`/tasks/${historyData.task_id}/history`, {
+    const res = await fetch(checkUrl, {
       method: "GET",
       headers: {
         "ngrok-skip-browser-warning": "true",
@@ -49,6 +61,10 @@ export const upsertHistory = async (historyData) => {
       url = `/tasks/history/${existing.history_id}`;
       method = "PUT";
     }
+    if (import.meta.env.NODE_ENV === "production") {
+      console.log("in production!!!");
+      url = `${import.meta.env.VITE_API_URL}${url}`;
+    }
 
     // 4. Use one fetch call for both create and update
     const response = await fetch(url, {
@@ -73,23 +89,4 @@ export const upsertHistory = async (historyData) => {
     console.error("Error upserting history:", error);
     throw error;
   }
-
-  //   try {
-  //     const response = await fetch(`/tasks/history`, {
-  //       method: "POST",
-  //       headers: {
-  //         "ngrok-skip-browser-warning": "true",
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(historyData),
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-  //     const data = await response.json();
-  //     return data;
-  //   } catch (error) {
-  //     console.error("Error upserting history:", error);
-  //     throw error;
-  //   }
 };

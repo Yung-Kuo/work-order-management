@@ -1,6 +1,12 @@
 export const fetchWorkers = async (setWorkers) => {
   try {
-    const response = await fetch(`/tasks/workers`, {
+    let url = `/tasks/workers`
+    if (import.meta.env.NODE_ENV === "production") {
+      console.log("in production!!!");
+      url = `${import.meta.env.VITE_API_URL}${url}`;
+    }
+    console.log("url: ", url);
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "ngrok-skip-browser-warning": "true",

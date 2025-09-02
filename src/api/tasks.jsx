@@ -5,7 +5,6 @@ export const fetchTasksByDate = async (setTasks, date) => {
       console.log("in production!!!");
       url = `${import.meta.env.VITE_API_URL}${url}`;
     }
-    url = `${import.meta.env.VITE_API_URL}${url}`;
     console.log("url: ", url);
     const response = await fetch(url, {
       method: "GET",
@@ -28,7 +27,13 @@ export const fetchTasksByDate = async (setTasks, date) => {
 export const createNewTask = async (newTask) => {
   console.log("newTask: ", newTask);
   try {
-    const response = await fetch("/tasks", {
+    let url = "/tasks";
+    if (import.meta.env.NODE_ENV === "production") {
+      console.log("in production!!!");
+      url = `${import.meta.env.VITE_API_URL}${url}`;
+    }
+    console.log("url: ", url);
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "ngrok-skip-browser-warning": "true",
@@ -50,7 +55,13 @@ export const createNewTask = async (newTask) => {
 
 export const updateTaskStatus = async (task, status) => {
   try {
-    const response = await fetch(`/tasks/${task.id}/status`, {
+    let url = `/tasks/${task.id}/status`;
+    if (import.meta.env.NODE_ENV === "production") {
+      console.log("in production!!!");
+      url = `${import.meta.env.VITE_API_URL}${url}`;
+    }
+    console.log("url: ", url);
+    const response = await fetch(url, {
       method: "PUT",
       headers: {
         "ngrok-skip-browser-warning": "true",

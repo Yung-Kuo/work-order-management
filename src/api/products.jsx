@@ -1,6 +1,12 @@
 export const fetchProductItems = async (product_name, setProductItems) => {
   try {
-    const response = await fetch(`/products/${product_name}/items`, {
+    let url = `/products/${product_name}/items`;
+    if (import.meta.env.NODE_ENV === "production") {
+      console.log("in production!!!");
+      url = `${import.meta.env.VITE_API_URL}${url}`;
+    }
+    console.log("url: ", url);
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "ngrok-skip-browser-warning": "true",
