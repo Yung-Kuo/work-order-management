@@ -13,7 +13,7 @@ export const NewTaskPopup = ({ toggle }) => {
   const addNewTask = async () => {
     const newTask = {
       product: tempProduct.name,
-      weight: tempWeight.toFixed(1),
+      weight: parseFloat(Number(tempWeight).toFixed(1)),
       date: tempDate,
       status: "pending",
     };
