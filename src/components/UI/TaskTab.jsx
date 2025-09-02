@@ -27,8 +27,9 @@ export const TaskTab = ({ task }) => {
   return (
     <div
       key={task?.id}
-      className="grid w-full cursor-pointer grid-cols-5 rounded-md border border-neutral-400 break-all transition-all hover:border-neutral-300 hover:ring-2 hover:ring-neutral-300 active:scale-95"
+      className="box-content grid w-full cursor-pointer grid-cols-5 rounded-md border border-neutral-400 break-all transition-all hover:border-r-4 hover:border-b-8 hover:border-neutral-300 active:scale-95"
     >
+      {/* hover:ring-2 hover:ring-neutral-300 */}
       <h4 className="p-2 first:rounded-l-md last:rounded-r-md odd:bg-neutral-700 lg:p-4">
         {task?.id}
       </h4>

@@ -79,10 +79,10 @@ export const TaskDashboard = () => {
   const [openNewTask, setOpenNewTask] = useState(false);
 
   return (
-    <div className="flex h-screen w-full flex-col items-center gap-4 px-4 py-6 text-xl text-neutral-100 md:py-10 md:text-2xl">
+    <div className="flex h-screen w-full flex-col items-center gap-5 py-6 text-xl text-neutral-100 md:py-10 md:text-2xl">
       {openNewTask && <NewTaskPopup toggle={setOpenNewTask} />}
       {/* date & add new task */}
-      <div className="flex h-12 w-full items-center p-1 md:h-16">
+      <div className="flex h-12 w-full items-center px-4 md:h-16">
         <div className="relative left-1/2 h-full -translate-x-1/2">
           <input
             type="date"
@@ -120,7 +120,7 @@ export const TaskDashboard = () => {
       </div>
 
       {/* table header */}
-      <div className="w-full px-1">
+      <div className="w-full px-4">
         <div className="grid w-full grid-cols-5 rounded-md bg-neutral-700">
           <h3 className="p-2 text-center lg:p-4">工單編號</h3>
           <h3 className="border-l border-dotted border-neutral-400 p-2 text-center lg:p-4">
@@ -139,8 +139,8 @@ export const TaskDashboard = () => {
       </div>
 
       {/* task list */}
-      <div className="relative w-full grow overflow-y-auto">
-        <div className="flex w-full flex-col gap-4 px-1">
+      <div className="relative w-full grow overflow-y-auto px-4">
+        <div className="flex w-full flex-col gap-4">
           {loading ? (
             <p className="text-neutral-400">loading</p>
           ) : tasks && tasks.length > 0 ? (
