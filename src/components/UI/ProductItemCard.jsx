@@ -280,7 +280,7 @@ export const ProductItemCard = ({
           </div>
         </div>
         {/* display timer */}
-        <div className="flex w-max self-end py-2 text-4xl">
+        <div className="flex w-max self-end py-2 md:text-3xl">
           <h3
             className={`flex items-center ${!history?.start_time ? "text-neutral-600" : ""}`}
           >

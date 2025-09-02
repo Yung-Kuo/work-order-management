@@ -1,39 +1,109 @@
 import { useState, useEffect, useContext } from "react";
 import TaskContext from "../context/TaskContext";
 import { NavLink } from "react-router";
-import { TaskTab } from "../components/UI/TaskTab";
 import { fetchTasksByDate } from "../api/tasks";
+import { TaskTab } from "../components/UI/TaskTab";
+import { NewTaskPopup } from "../components/UI/NewTaskPopup";
 
 export const TaskDashboard = () => {
-  const [date, setDate] = useState("2025-08-26");
+  // const [date, setDate] = useState("2025-08-26");
   // const [tasks, setTasks] = useState([]);
   const fillerTasks = [
-    ["A001", "09:00:00", "黃金泡菜", "10 kg", "completed"],
-    ["A002", "13:00:00", "海帶芽", "5 kg", "pending"],
-    ["A001", "09:00:00", "黃金泡菜", "10 kg", "completed"],
-    ["A002", "13:00:00", "海帶芽", "5 kg", "in_progress"],
-    ["A001", "09:00:00", "黃金泡菜", "10 kg", "completed"],
-    ["A002", "13:00:00", "海帶芽", "5 kg", "pending"],
-    ["A001", "09:00:00", "黃金泡菜", "10 kg", "completed"],
-    ["A002", "13:00:00", "海帶芽", "5 kg", "in_progress"],
+    {
+      id: "A001",
+      totalTime: "09:00:00",
+      product: "黃金泡菜",
+      weight: "10 kg",
+      status: "completed",
+    },
+    {
+      id: "A002",
+      totalTime: "13:00:00",
+      product: "海帶芽",
+      weight: "5 kg",
+      status: "pending",
+    },
+    {
+      id: "A001",
+      totalTime: "09:00:00",
+      product: "黃金泡菜",
+      weight: "10 kg",
+      status: "completed",
+    },
+    {
+      id: "A002",
+      totalTime: "13:00:00",
+      product: "海帶芽",
+      weight: "5 kg",
+      status: "in_progress",
+    },
+    {
+      id: "A001",
+      totalTime: "09:00:00",
+      product: "黃金泡菜",
+      weight: "10 kg",
+      status: "completed",
+    },
+    {
+      id: "A002",
+      totalTime: "13:00:00",
+      product: "海帶芽",
+      weight: "5 kg",
+      status: "pending",
+    },
+    {
+      id: "A001",
+      totalTime: "09:00:00",
+      product: "黃金泡菜",
+      weight: "10 kg",
+      status: "completed",
+    },
+    {
+      id: "A002",
+      totalTime: "13:00:00",
+      product: "海帶芽",
+      weight: "5 kg",
+      status: "in_progress",
+    },
   ];
-  const [tasks, setTasks] = useContext(TaskContext);
+  const [tasks, setTasks, date, setDate] = useContext(TaskContext);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    fetchTasksByDate(setTasks, date);
+    setLoading(true);
+    fetchTasksByDate((tasks) => {
+      setTasks(tasks);
+      setLoading(false);
+    }, date);
   }, [date]);
+
+  const [openNewTask, setOpenNewTask] = useState(false);
 
   return (
     <div className="flex h-screen w-full flex-col items-center gap-4 py-10 text-xl text-neutral-100 md:text-2xl">
-      <input
-        type="date"
-        id="workDate"
-        name="work-date"
-        value={date}
-        min="2025-08-25"
-        max="2025-09-05"
-        className="custom-date-input mb-4 rounded-md border border-neutral-400 p-1 text-3xl ring-sky-300 transition-all outline-none focus:border-sky-300 focus:ring"
-        onChange={(e) => setDate(e.target.value)}
-      />
+      {openNewTask && <NewTaskPopup toggle={setOpenNewTask} />}
+      {/* date & add new task */}
+      <div className="flex h-12 w-full items-center p-1">
+        <div className="absolute left-1/2 -translate-x-1/2">
+          <input
+            type="date"
+            id="workDate"
+            name="work-date"
+            value={date}
+            min="2025-08-25"
+            max="2025-09-05"
+            className="custom-date-input h-12 rounded-md border border-neutral-400 px-1 text-3xl ring-sky-300 transition-all outline-none focus:border-sky-300 focus:ring"
+            onChange={(e) => setDate(e.target.value)}
+          />
+        </div>
+        {/* <button
+          className="ml-auto flex h-12 cursor-pointer items-center rounded-md bg-neutral-300 px-4 font-bold text-neutral-800 transition-all hover:bg-neutral-100 active:scale-95"
+          onClick={() => setOpenNewTask((prev) => !prev)}
+        >
+          新增工單
+        </button> */}
+      </div>
+
+      {/* table header */}
       <div className="w-full p-1">
         <div className="grid w-full grid-cols-5 rounded-md bg-neutral-700">
           <h3 className="p-4">工單編號</h3>
@@ -55,7 +125,9 @@ export const TaskDashboard = () => {
       {/* task list */}
       <div className="relative w-full grow overflow-y-auto">
         <div className="flex w-full flex-col gap-4 p-1">
-          {tasks && tasks.length > 0 ? (
+          {loading ? (
+            <p className="text-neutral-400">loading</p>
+          ) : tasks && tasks.length > 0 ? (
             <>
               {tasks.map((task, index) => (
                 <NavLink
@@ -63,16 +135,14 @@ export const TaskDashboard = () => {
                   to={`/task/${task.id}`}
                   className="w-full"
                 >
-                  <TaskTab
-                    task={task}
-                    first={task.id ?? index}
-                    second={""}
-                    third={task.product}
-                    fourth={task.weight + " kg"}
-                    fifth={task.status}
-                  />
+                  <TaskTab task={task} />
                 </NavLink>
               ))}
+              {/* Render fillerTasks after the real tasks */}
+              {/* {fillerTasks &&
+                fillerTasks.map((ft, index) => (
+                  <TaskTab key={`filler-${index}`} task={ft} />
+                ))} */}
             </>
           ) : (
             <p className="text-neutral-400">No tasks</p>

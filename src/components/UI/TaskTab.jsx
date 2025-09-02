@@ -33,7 +33,7 @@ export const TaskTab = ({ task }) => {
         {task?.id}
       </h4>
       <h4 className="p-2 first:rounded-l-md last:rounded-r-md odd:bg-neutral-700 lg:p-4">
-        {totalTime}
+        {task?.totalTime || totalTime}
       </h4>
       <h4 className="p-2 first:rounded-l-md last:rounded-r-md odd:bg-neutral-700 lg:p-4">
         {task.product}
