@@ -22,7 +22,7 @@ export const fetchHistoryByTaskId = async (taskId, setHistory) => {
       ...Object.fromEntries((data.histories || []).map((h) => [h.item_id, h])),
     }));
   } catch (error) {
-    console.error("Error fetching history by task id:", error);
+    // console.error("Error fetching history by task id:", error);
   }
 };
 
