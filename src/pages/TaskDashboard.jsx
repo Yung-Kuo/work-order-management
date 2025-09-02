@@ -95,12 +95,12 @@ export const TaskDashboard = () => {
             onChange={(e) => setDate(e.target.value)}
           />
         </div>
-        {/* <button
+        <button
           className="ml-auto flex h-12 cursor-pointer items-center rounded-md bg-neutral-300 px-4 font-bold text-neutral-800 transition-all hover:bg-neutral-100 active:scale-95"
           onClick={() => setOpenNewTask((prev) => !prev)}
         >
           新增工單
-        </button> */}
+        </button>
       </div>
 
       {/* table header */}
