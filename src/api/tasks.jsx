@@ -1,6 +1,11 @@
 export const fetchTasksByDate = async (setTasks, date) => {
   try {
-    const response = await fetch(`/tasks/${date}`, {
+    let url = `/tasks/${date}`;
+    if (import.meta.env.NODE_ENV === "production") {
+      url = `${import.meta.env.VITE_API_URL}${url}`;
+    }
+    console.log("url: ", url);
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "ngrok-skip-browser-warning": "true",

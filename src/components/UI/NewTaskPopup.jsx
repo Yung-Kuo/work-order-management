@@ -4,12 +4,10 @@ import { createNewTask } from "../../api/tasks";
 import { ComboboxCreate } from "../HeadlessUI/ComboboxCreate";
 export const NewTaskPopup = ({ toggle }) => {
   const [, setTasks, date] = useContext(TaskContext);
-  const [tempDate, setTempDate] = useState(date);
+  const [tempDate, setTempDate] = useState(date || "");
   const [tempWeight, setTempWeight] = useState(1);
   useEffect(() => {
-    setTempDate(() => {
-      console.log("tempDate: ", tempDate);
-    }, date);
+    setTempDate(date);
   }, [date]);
   const [tempProduct, setTempProduct] = useState("");
   const addNewTask = async () => {
