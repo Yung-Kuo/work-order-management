@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import TaskContext from "../../context/TaskContext";
-import { createNewTask } from "../../api/tasks";
+import { createNewTask, updateTaskStatus } from "../../api/tasks";
 import { ComboboxCreate } from "../HeadlessUI/ComboboxCreate";
 export const NewTaskPopup = ({ toggle }) => {
   const [, setTasks, date] = useContext(TaskContext);
@@ -12,14 +12,23 @@ export const NewTaskPopup = ({ toggle }) => {
   const [tempProduct, setTempProduct] = useState("");
   const addNewTask = async () => {
     const newTask = {
-      product: tempProduct.name,
+      product_name: String(tempProduct.name),
       weight: parseFloat(Number(tempWeight).toFixed(1)),
-      date: tempDate,
-      status: "pending",
+      date: String(tempDate),
+      // status: "pending",
     };
     const response = await createNewTask(newTask);
     if (response && tempDate === date) {
-      setTasks((prev) => [...prev, task]);
+      const createdNewTask = {
+        id: response.task_id,
+        product: newTask.product_name,
+        status: "pending",
+        ...newTask,
+      };
+      console.log("createdNewTask: ", createdNewTask);
+      // updateTaskStatus(createdNewTask, "pending");
+      setTasks((prev) => [...prev, createdNewTask]);
+      toggle((prev) => !prev);
     }
   };
   return (
