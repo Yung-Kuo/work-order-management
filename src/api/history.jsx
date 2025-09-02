@@ -43,9 +43,9 @@ export const upsertHistory = async (historyData) => {
       },
     });
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch histories for upsert");
-    }
+    // if (!res.ok) {
+    //   throw new Error("Failed to fetch histories for upsert");
+    // }
 
     const data = await res.json();
     const histories = data.histories || [];
@@ -61,6 +61,8 @@ export const upsertHistory = async (historyData) => {
       url = `/tasks/history/${existing.history_id}`;
       method = "PUT";
     }
+    console.log("url: ", url);
+    console.log("method: ", method);
     if (import.meta.env.NODE_ENV === "production") {
       console.log("in production!!!");
       url = `${import.meta.env.VITE_API_URL}${url}`;
