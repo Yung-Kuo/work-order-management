@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router";
 import { useState, useEffect, useContext, useMemo } from "react";
-import { updateTaskStatus } from "../api/tasks";
+import { fetchTaskById, updateTaskStatus } from "../api/tasks";
 import { fetchProductItems } from "../api/products";
 import { fetchWorkers } from "../api/workers";
 import { fetchHistoryByTaskId } from "../api/history";
@@ -13,22 +13,24 @@ export const TaskDetail = () => {
   const navigate = useNavigate();
 
   // Use useMemo to avoid unnecessary recalculation of task on every render
-  const task = useMemo(
-    () => tasks.find((t) => String(t.id) === String(tid)),
-    [tasks, tid],
-  );
+  // Handle case when tasks is not loaded or empty
+  const task = useMemo(() => {
+    if (!tasks || !Array.isArray(tasks) || tasks.length === 0) return null;
+    return tasks.find((t) => String(t.id) === String(tid)) || null;
+  }, [tasks, tid]);
 
   // navigate to dashboard if no task data(because tasks can only be accessed using date instead of tid)
-  useEffect(() => {
-    if (!task) {
-      navigate("/", { replace: true });
-    }
-  }, [task, navigate]);
+  // useEffect(() => {
+  //   // if (!task) {
+  //   //   navigate("/", { replace: true });
+  //   // }
+  //   fetchTaskById(tid, setTasks);
+  // }, [tid, setTasks]);
 
   // fetch product items
   const [productItems, setProductItems] = useState({});
   useEffect(() => {
-    fetchProductItems(task.product, setProductItems);
+    fetchProductItems(task?.product, setProductItems);
   }, [task]);
 
   // fetch workers
@@ -40,7 +42,7 @@ export const TaskDetail = () => {
   const [history, setHistory] = useState([]);
   useEffect(() => {
     // fetchHistoryByDate(task.date, setHistory);
-    fetchHistoryByTaskId(task.id, setHistory);
+    fetchHistoryByTaskId(task?.id, setHistory);
   }, [task]);
 
   // calculate total time (sum of all duration_minutes)
@@ -147,7 +149,7 @@ export const TaskDetail = () => {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {(productItems?.[task?.product] ?? []).map((item) => (
           <ProductItemCard
-            task={task}
+            task={task ?? ""}
             item={item}
             workers={workers}
             selectedWorkers={selectedWorkers[item.id]}

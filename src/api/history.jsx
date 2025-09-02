@@ -5,7 +5,7 @@ export const fetchHistoryByTaskId = async (taskId, setHistory) => {
       console.log("in production!!!");
       url = `${import.meta.env.VITE_API_URL}${url}`;
     }
-    console.log("url: ", url);
+    // console.log("url: ", url);
     const response = await fetch(url, {
       method: "GET",
       headers: {

@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/tasks",
+      "destination": "https://10c0f249e36c.ngrok-free.app"
+    },
+    {
+      "source": "/products",
+      "destination": "https://10c0f249e36c.ngrok-free.app"
+    }
+  ]
+}
