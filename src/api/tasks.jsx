@@ -27,10 +27,10 @@ export const fetchTasksByDate = async (setTasks, date) => {
 export const createNewTask = async (newTask) => {
   console.log("newTask: ", newTask);
   try {
-    let url = "/tasks";
+    let url = `/tasks`;
     if (import.meta.env.NODE_ENV === "production") {
       console.log("in production!!!");
-      url = `${import.meta.env.VITE_API_URL}${url}`;
+      url = `${import.meta.env.VITE_API_URL}/tasks`;
     }
     console.log("url: ", url);
     const response = await fetch(url, {

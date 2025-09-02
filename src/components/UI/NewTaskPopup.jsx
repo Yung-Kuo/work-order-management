@@ -17,7 +17,7 @@ export const NewTaskPopup = ({ toggle }) => {
       date: tempDate,
       status: "pending",
     };
-    const response = await createNewTask([newTask]);
+    const response = await createNewTask(newTask);
     if (response && tempDate === date) {
       setTasks((prev) => [...prev, task]);
     }
