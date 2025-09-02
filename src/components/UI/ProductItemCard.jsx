@@ -261,7 +261,7 @@ export const ProductItemCard = ({
           <button
             className="w-max cursor-pointer rounded-l-md bg-neutral-600 px-4 py-2 whitespace-nowrap transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
             onClick={handleAddEndTime}
-            disabled={history?.end_time}
+            disabled={history?.end_time || !history?.start_time}
           >
             結束計時
           </button>
