@@ -30,7 +30,7 @@ export const NewTaskPopup = ({ toggle }) => {
         onClick={() => toggle((prev) => !prev)}
         className="h-screen w-screen overflow-hidden backdrop-blur-xs"
       />
-      <div className="fixed top-1/2 left-1/2 z-30 flex h-full w-full -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-10 rounded-md bg-neutral-800 p-10 md:h-[32rem] md:w-[40rem]">
+      <div className="fixed top-1/2 left-1/2 z-30 flex h-full w-full -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-10 rounded-md bg-neutral-800 p-2 md:h-[32rem] md:w-[40rem] md:p-10">
         <h3 className="text-3xl font-bold">新增工單</h3>
         <form
           action=""
@@ -40,8 +40,10 @@ export const NewTaskPopup = ({ toggle }) => {
           }}
           className="flex w-full flex-col gap-4"
         >
-          <div>
-            <label htmlFor="date">日期：</label>
+          <div className="flex items-center">
+            <label htmlFor="date" className="break-keep">
+              日期：
+            </label>
             <input
               type="date"
               id="newTaskDate"
@@ -54,7 +56,9 @@ export const NewTaskPopup = ({ toggle }) => {
             />
           </div>
           <div className="flex w-full items-center">
-            <label htmlFor="product">產品：</label>
+            <label htmlFor="product" className="break-keep">
+              產品：
+            </label>
             <div className="grow">
               <ComboboxCreate
                 name="產品名稱"
@@ -66,7 +70,9 @@ export const NewTaskPopup = ({ toggle }) => {
             </div>
           </div>
           <div>
-            <label htmlFor="weight">重量：</label>
+            <label htmlFor="weight" className="break-keep">
+              重量：
+            </label>
             <input
               type="text"
               id="weight"
