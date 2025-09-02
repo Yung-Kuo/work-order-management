@@ -37,7 +37,7 @@ export const NewTaskPopup = ({ toggle }) => {
         onClick={() => toggle((prev) => !prev)}
         className="h-screen w-screen overflow-hidden backdrop-blur-xs"
       />
-      <div className="fixed top-1/2 left-1/2 z-30 flex h-full w-full -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-10 rounded-md bg-neutral-800 p-2 md:h-[32rem] md:w-[40rem] md:p-10">
+      <div className="fixed top-1/2 left-1/2 z-30 flex h-5/6 w-5/6 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-10 overflow-hidden rounded-md bg-neutral-800 p-4 text-xl md:h-[32rem] md:w-[40rem] md:p-10 md:text-2xl">
         <h3 className="text-3xl font-bold">新增工單</h3>
         <form
           action=""
@@ -58,7 +58,7 @@ export const NewTaskPopup = ({ toggle }) => {
               value={tempDate}
               min="2025-08-25"
               max="2025-09-05"
-              className="custom-date-input h-12 rounded-md border border-neutral-400 px-1 text-3xl ring-sky-300 transition-all outline-none focus:border-sky-300 focus:ring"
+              className="custom-date-input h-12 rounded-md border border-neutral-400 px-1 ring-sky-300 transition-all outline-none focus:border-sky-300 focus:ring"
               onChange={(e) => setTempDate(e.target.value)}
             />
           </div>
@@ -72,7 +72,7 @@ export const NewTaskPopup = ({ toggle }) => {
                 options={[{ id: 0, name: "黃金泡菜" }]}
                 value={tempProduct}
                 onChange={(value) => setTempProduct(value)}
-                className="rounded-md border-2 border-transparent bg-neutral-900 p-2 text-2xl text-neutral-100 focus:border-sky-600 focus:outline-none"
+                className="rounded-md border-2 border-transparent bg-neutral-900 p-2 text-neutral-100 focus:border-sky-600 focus:outline-none"
               />
             </div>
           </div>
@@ -96,7 +96,7 @@ export const NewTaskPopup = ({ toggle }) => {
               inputMode="numeric"
               pattern="[0-9]*"
               min="1"
-              className="w-20 rounded-md border-2 border-transparent bg-neutral-900 p-2 text-2xl text-neutral-100 focus:border-sky-600 focus:outline-none"
+              className="w-20 rounded-md border-2 border-transparent bg-neutral-900 p-2 text-neutral-100 focus:border-sky-600 focus:outline-none"
             />
             <span className="text-neutral-400"> 公斤</span>
           </div>
