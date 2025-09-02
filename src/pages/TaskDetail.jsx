@@ -122,8 +122,8 @@ export const TaskDetail = () => {
   }, [history, workers]);
 
   return (
-    <div className="flex h-full w-full flex-col gap-4 py-10 text-2xl text-neutral-100">
-      <div className="grid w-full grid-cols-2 gap-4 rounded-md bg-neutral-700 p-5 text-neutral-300">
+    <div className="flex h-full w-full flex-col gap-4 p-5 text-2xl text-neutral-100 lg:py-10">
+      <div className="grid w-full grid-cols-2 gap-4 rounded-md bg-neutral-700 p-4 text-neutral-300">
         <h4>
           工單：
           <span className="block font-bold text-neutral-100 md:inline-block">
