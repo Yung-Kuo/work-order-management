@@ -32,12 +32,12 @@ export const NewTaskPopup = ({ toggle }) => {
     }
   };
   return (
-    <div className="fixed top-0 left-0 z-20">
+    <div className="fixed top-0 left-0 z-30">
       <div
         onClick={() => toggle((prev) => !prev)}
         className="h-screen w-screen overflow-hidden backdrop-blur-xs"
       />
-      <div className="fixed top-1/2 left-1/2 z-30 flex w-5/6 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-10 overflow-hidden rounded-md bg-neutral-800 p-4 py-10 text-xl md:w-[40rem] md:p-10 md:text-2xl">
+      <div className="fixed top-1/2 left-1/2 z-40 flex w-5/6 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-10 overflow-hidden rounded-md bg-neutral-800 p-4 py-10 text-xl md:w-[40rem] md:p-10 md:text-2xl">
         <h3 className="text-3xl font-bold">新增工單</h3>
         <form
           action=""
