@@ -82,7 +82,7 @@ export const TaskDashboard = () => {
     <div className="flex h-screen w-full flex-col items-center gap-5 py-6 text-xl text-neutral-100 md:py-10 md:text-2xl">
       {openNewTask && <NewTaskPopup toggle={setOpenNewTask} />}
       {/* date & add new task */}
-      <div className="flex h-12 w-full items-center justify-between px-4 md:h-16">
+      <div className="flex h-12 w-full items-center justify-between px-4 md:h-14">
         {/* switch date */}
         <div className="flex h-full items-center gap-4">
           <button
@@ -114,7 +114,7 @@ export const TaskDashboard = () => {
             </svg>
           </button>
           <button
-            className="h-10 w-10 cursor-pointer rounded-md bg-neutral-600 transition-all hover:bg-neutral-500 active:scale-95 md:h-12 md:w-12"
+            className="hidden h-10 w-10 cursor-pointer rounded-md bg-neutral-600 transition-all hover:bg-neutral-500 active:scale-95 md:flex md:h-12 md:w-12"
             onClick={() => {
               // setDate to previous day
               const prevDate = new Date(date);
@@ -151,13 +151,13 @@ export const TaskDashboard = () => {
             value={date}
             min="2025-08-25"
             max="2025-09-05"
-            className="custom-date-input h-full rounded-md border border-neutral-400 px-1 text-3xl ring-sky-300 transition-all outline-none focus:border-sky-300 focus:ring"
+            className="h-full rounded-md border border-neutral-400 px-1 text-3xl ring-sky-300 transition-all outline-none focus:border-sky-300 focus:ring"
             onChange={(e) => setDate(e.target.value)}
           />
         </div>
         {/* add new task */}
         <button
-          className="fixed right-5 bottom-5 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-neutral-300 font-bold text-neutral-800 transition-all hover:bg-neutral-100 active:scale-95 md:static md:h-full md:w-max md:rounded-md md:px-4"
+          className="fixed right-5 bottom-5 z-20 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-neutral-300 font-bold text-neutral-800 transition-all hover:bg-neutral-100 active:scale-95 md:static md:h-full md:w-max md:rounded-md md:px-4"
           onClick={() => setOpenNewTask((prev) => !prev)}
         >
           <span className="hidden md:flex">新增工單</span>
@@ -178,10 +178,39 @@ export const TaskDashboard = () => {
             </svg>
           </span>
         </button>
+        {/* next day button for small screen */}
+        <button
+          className="flex h-10 w-10 cursor-pointer rounded-md bg-neutral-600 transition-all hover:bg-neutral-500 active:scale-95 md:hidden"
+          onClick={() => {
+            // setDate to previous day
+            const prevDate = new Date(date);
+            prevDate.setDate(prevDate.getDate() + 1);
+            const yyyy = prevDate.getFullYear();
+            // getMonth() is zero-based, so add 1 to get the correct month number
+            const mm = String(prevDate.getMonth() + 1).padStart(2, "0");
+            const dd = String(prevDate.getDate()).padStart(2, "0");
+            setDate(`${yyyy}-${mm}-${dd}`);
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-full w-full"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
       </div>
 
       {/* table header */}
-      <div className="w-full px-4">
+      <div className="h-min w-full px-4">
         <div className="grid w-full grid-cols-5 rounded-md bg-neutral-700">
           <h3 className="p-2 text-center lg:p-4">工單編號</h3>
           <h3 className="border-l border-dotted border-neutral-400 p-2 text-center lg:p-4">
@@ -200,7 +229,7 @@ export const TaskDashboard = () => {
       </div>
 
       {/* task list */}
-      <div className="relative w-full grow overflow-y-auto px-4">
+      <div className="w-full grow overflow-y-auto px-4">
         <div className="flex w-full flex-col gap-4">
           {loading ? (
             <p className="text-neutral-400">loading</p>
