@@ -82,8 +82,68 @@ export const TaskDashboard = () => {
     <div className="flex h-screen w-full flex-col items-center gap-5 py-6 text-xl text-neutral-100 md:py-10 md:text-2xl">
       {openNewTask && <NewTaskPopup toggle={setOpenNewTask} />}
       {/* date & add new task */}
-      <div className="flex h-12 w-full items-center px-4 md:h-16">
-        <div className="relative left-1/2 h-full -translate-x-1/2">
+      <div className="flex h-12 w-full items-center justify-between px-4 md:h-16">
+        {/* switch date */}
+        <div className="flex h-full items-center gap-4">
+          <button
+            className="h-10 w-10 cursor-pointer rounded-md bg-neutral-600 transition-all hover:bg-neutral-500 active:scale-95 md:h-12 md:w-12"
+            onClick={() => {
+              // setDate to previous day
+              const prevDate = new Date(date);
+              prevDate.setDate(prevDate.getDate() - 1);
+              const yyyy = prevDate.getFullYear();
+              // getMonth() is zero-based, so add 1 to get the correct month number
+              const mm = String(prevDate.getMonth() + 1).padStart(2, "0");
+              const dd = String(prevDate.getDate()).padStart(2, "0");
+              setDate(`${yyyy}-${mm}-${dd}`);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-full w-full"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+          <button
+            className="h-10 w-10 cursor-pointer rounded-md bg-neutral-600 transition-all hover:bg-neutral-500 active:scale-95 md:h-12 md:w-12"
+            onClick={() => {
+              // setDate to previous day
+              const prevDate = new Date(date);
+              prevDate.setDate(prevDate.getDate() + 1);
+              const yyyy = prevDate.getFullYear();
+              // getMonth() is zero-based, so add 1 to get the correct month number
+              const mm = String(prevDate.getMonth() + 1).padStart(2, "0");
+              const dd = String(prevDate.getDate()).padStart(2, "0");
+              setDate(`${yyyy}-${mm}-${dd}`);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-full w-full"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </div>
+        {/* date window */}
+        <div className="h-full w-min">
           <input
             type="date"
             id="workDate"
@@ -95,8 +155,9 @@ export const TaskDashboard = () => {
             onChange={(e) => setDate(e.target.value)}
           />
         </div>
+        {/* add new task */}
         <button
-          className="ml-auto flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-neutral-300 font-bold text-neutral-800 transition-all hover:bg-neutral-100 active:scale-95 md:h-full md:w-max md:rounded-md md:px-4"
+          className="fixed right-5 bottom-5 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-neutral-300 font-bold text-neutral-800 transition-all hover:bg-neutral-100 active:scale-95 md:static md:h-full md:w-max md:rounded-md md:px-4"
           onClick={() => setOpenNewTask((prev) => !prev)}
         >
           <span className="hidden md:flex">新增工單</span>
