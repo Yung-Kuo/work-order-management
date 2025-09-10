@@ -82,7 +82,7 @@ export const TaskDashboard = () => {
     <div className="flex h-screen w-full flex-col items-center gap-5 py-6 text-xl text-neutral-100 md:py-10 md:text-2xl">
       {openNewTask && <NewTaskPopup toggle={setOpenNewTask} />}
       {/* date & add new task */}
-      <div className="flex h-12 w-full items-center px-4 md:h-14">
+      <div className="flex h-min w-full items-center px-4">
         {/* date window & switch date */}
         <div className="relative left-1/2 flex h-full w-min -translate-x-1/2 items-center gap-4">
           {/* previous day */}
