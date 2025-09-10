@@ -84,7 +84,7 @@ export const TaskDashboard = () => {
       {/* date & add new task */}
       <div className="flex h-12 w-full items-center px-4 md:h-14">
         {/* date window & switch date */}
-        <div className="relative left-1/2 flex h-full w-min -translate-x-1/2 items-center gap-4">
+        <div className="relative left-1/2 flex h-full w-full -translate-x-1/2 items-center justify-between md:w-min md:gap-4">
           {/* previous day */}
           <button
             className="h-10 w-10 cursor-pointer rounded-md bg-neutral-600 transition-all hover:bg-neutral-500 active:scale-95 md:h-12 md:w-12"
@@ -123,7 +123,7 @@ export const TaskDashboard = () => {
               value={date}
               min="2025-08-25"
               max="2025-09-05"
-              className="h-full rounded-md border border-neutral-400 px-1 text-3xl ring-sky-300 transition-all outline-none focus:border-sky-300 focus:ring"
+              className="h-full rounded-md border border-neutral-400 px-1 text-2xl ring-sky-300 transition-all outline-none focus:border-sky-300 focus:ring md:text-3xl"
               onChange={(e) => setDate(e.target.value)}
             />
           </div>
